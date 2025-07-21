@@ -1,4 +1,4 @@
-# What Is Post-Quantum Cryptography?
+## What Is Post-Quantum Cryptography?
 
 Quantum computers are no longer just science fiction—they’re getting real. And with them comes a big challenge: they could break many of the cryptographic systems we rely on today to keep our data safe.
 
@@ -10,7 +10,7 @@ Organizations like NIST (the National Institute of Standards and Technology) hav
 
 It’s also worth noting that NIST has selected an additional algorithm called __Hamming Quasi-Cyclic__ (__HQC__) as a backup to __Module-Lattice based Key Encapsulation Mechanism__ (__ML-KEM__) a.k.a __Kyber__, the primary choice for general-purpose encryption. HQC is based on different mathematical foundations, giving us more options if future research reveals weaknesses in lattice-based methods.
 
-# Digital Signatures and Key Encapsulation Mechanisms (KEMs)
+## Digital Signatures and Key Encapsulation Mechanisms (KEMs)
 Before I jump into my demo, it’s good to understand two key building blocks: digital signatures and key encapsulation mechanisms (KEMs).
 
 A digital signature lets someone prove that a message (or data) really came from them and hasn’t been tampered with. Think of it like signing a document—except it's done with math. In my demo, the server uses the Dilithium signature scheme to sign its public key, so the client can verify it's talking to the right party and not an imposter.
@@ -21,7 +21,7 @@ Now, you might be wondering: how is KEM different from regular public-key encryp
 
 The main difference is that public-key encryption is typically used to encrypt arbitrary messages, while KEM is specifically designed to securely exchange secret keys. It’s a streamlined, more efficient approach for key exchange—especially useful when you want to switch to fast symmetric encryption (like AES) afterward, which is exactly what I do.
 
-#  Communication Flow Using Kyber + Dilithium
+##  Communication Flow Using Kyber + Dilithium
 
 To show how post-quantum cryptography can be used in a real-world setting, I’ve created a simple Rust demo that simulates a secure communication session between a client and a server.
 
@@ -32,15 +32,15 @@ For the sake of the example, I pre-generated a Dilithium key pair and stored it 
 
 Let’s walk through the communication process.
 
-### Roles 
+#### Roles 
 - Client (initiates the communication)
 - Server (responds and proves identity)
 
-### Step 1: Client initiates communication
+#### Step 1: Client initiates communication
 - Client sends communication request (e.g. opens a TCP connection to the Server)
 - This is just the initial network setup — no cryptography yet.
 
-### Step 2: Server sends its Kyber public key + Dilithium signature
+#### Step 2: Server sends its Kyber public key + Dilithium signature
 Server 
  - already has a pair of digital signature (dilithium) keys: `(pk_dil, sk_dil)`
  - generates a pair of Kyber keys: `(pk_kyber, sk_kyber)`
@@ -52,7 +52,7 @@ Server
     "signature": "..."
  }
 ```
- ### Step 3: Client verifies the signature
+ #### Step 3: Client verifies the signature
  Client
  - already has Server's Dilithium public key (`pk_dil`) through some trusted method (e.g., certificate, config, or manual distribution)
  - verifies: `verify(pk_kyber, signature, pk_dil)`
@@ -60,17 +60,17 @@ Server
 - generates and secret key and encapsulates it using Server's Kyber public key: `(ciphertext, shared_secret) = encapsulate(pk_kyber, rng)`
 - sends the `ciphertext` to the Server.
 
-### Step 4: Server decpasulates the ciphertext
+#### Step 4: Server decpasulates the ciphertext
 Server
 - receives the ciphertext and uses its Kyber secret key to recover the shared secret: `shared_secret = decapsulate(ciphertext, sk_kyber)`
 
 Now both Client and Server share the same secret.
 
-### Step: Secure symmetric communication begins
+#### Step: Secure symmetric communication begins
 With the shared secret established, Server and Client switch to symmetric encryption (like AES-GCM) for fast, secure communication.
 
 
-# Demo: Secure Communication in Rust Using Kyber + Dilithium + AES-GCM
+## Demo: Secure Communication in Rust Using Kyber + Dilithium + AES-GCM
 The full example is available in [my GitHub repository](https://github.com/fade2black/kyber-dilithium-demo), but here’s the core part of the demo (the main.rs file) which ties everything together.
 
 This simple Rust program demonstrates:
@@ -123,7 +123,7 @@ This example demonstrates just the high-level flow. If you’re curious about th
 In the next part, I’m planning to expand the demo into a more realistic setup, with separate client and server processes communicating over a network using the TCP protocol. This version will include key exchange and secure message transmission using symmetric encryption (AES-GCM) in a real network environment.
 
 
-# Reference
+## Reference
 1. [What Is Post-Quantum Cryptography? ](https://www.nist.gov/cybersecurity/what-post-quantum-cryptography)
 2. [HQC as Fifth Algorithm for Post-Quantum Encryption](https://www.nist.gov/news-events/news/2025/03/nist-selects-hqc-fifth-algorithm-post-quantum-encryption)
 3. [Lattice Problem](https://en.wikipedia.org/wiki/Lattice_problem#Shortest_vector_problem_(SVP))
