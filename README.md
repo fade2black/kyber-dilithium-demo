@@ -6,20 +6,20 @@ Most current encryption methods, like RSA or Elliptic Curve Cryptography, depend
 
 That’s where post-quantum cryptography (PQC) comes in. It’s a new kind of cryptography designed to resist attacks even from quantum computers. Instead of relying on things like factoring or discrete logarithms, PQC algorithms use different mathematical problems, like lattice-based constructions, that are believed to be hard for both classical and quantum computers to crack.
 
-Organizations like NIST (the National Institute of Standards and Technology) have been working on standardizing these new algorithms. Two of the most promising ones are Kyber (used for exchanging keys securely) and Dilithium (used for digital signatures). These are the tools we’ll be using in our demo.
+Organizations like NIST (the National Institute of Standards and Technology) have been working on standardizing these new algorithms. Two of the most promising ones are Kyber (used for exchanging keys securely) and Dilithium (used for digital signatures). These are the tools I'll be using in my demo.
 
 It’s also worth noting that NIST has selected an additional algorithm called __Hamming Quasi-Cyclic__ (__HQC__) as a backup to __Module-Lattice based Key Encapsulation Mechanism__ (__ML-KEM__) a.k.a __Kyber__, the primary choice for general-purpose encryption. HQC is based on different mathematical foundations, giving us more options if future research reveals weaknesses in lattice-based methods.
 
 # Digital Signatures and Key Encapsulation Mechanisms (KEMs)
-Before we jump into our demo, it’s good to understand two key building blocks: digital signatures and key encapsulation mechanisms (KEMs).
+Before I jump into my demo, it’s good to understand two key building blocks: digital signatures and key encapsulation mechanisms (KEMs).
 
-A digital signature lets someone prove that a message (or data) really came from them and hasn’t been tampered with. Think of it like signing a document—except it's done with math. In our demo, the server uses the Dilithium signature scheme to sign its public key, so the client can verify it's talking to the right party and not an imposter.
+A digital signature lets someone prove that a message (or data) really came from them and hasn’t been tampered with. Think of it like signing a document—except it's done with math. In my demo, the server uses the Dilithium signature scheme to sign its public key, so the client can verify it's talking to the right party and not an imposter.
 
-A key encapsulation mechanism (KEM) is a way for two parties to securely agree on a shared secret over an insecure network. One side publishes a public key, and the other uses it to generate a shared key and send it back in a “capsule” (ciphertext). The owner of the private key can open the capsule and recover the same shared key. In our case, we use Kyber, a lattice-based KEM, to establish this shared secret.
+A key encapsulation mechanism (KEM) is a way for two parties to securely agree on a shared secret over an insecure network. One side publishes a public key, and the other uses it to generate a shared key and send it back in a “capsule” (ciphertext). The owner of the private key can open the capsule and recover the same shared key. In my case, I use Kyber, a lattice-based KEM, to establish this shared secret.
 
 Now, you might be wondering: how is KEM different from regular public-key encryption?
 
-The main difference is that public-key encryption is typically used to encrypt arbitrary messages, while KEM is specifically designed to securely exchange secret keys. It’s a streamlined, more efficient approach for key exchange—especially useful when you want to switch to fast symmetric encryption (like AES) afterward, which is exactly what we do.
+The main difference is that public-key encryption is typically used to encrypt arbitrary messages, while KEM is specifically designed to securely exchange secret keys. It’s a streamlined, more efficient approach for key exchange—especially useful when you want to switch to fast symmetric encryption (like AES) afterward, which is exactly what I do.
 
 #  Communication Flow Using Kyber + Dilithium
 
@@ -71,7 +71,7 @@ With the shared secret established, Server and Client switch to symmetric encryp
 
 
 # Demo: Secure Communication in Rust Using Kyber + Dilithium + AES-GCM
-The full example is available in my GitHub repository (link to be added), but here’s the core part of the demo (the main.rs file) which ties everything together.
+The full example is available in [my GitHub repository](https://github.com/fade2black/kyber-dilithium-demo), but here’s the core part of the demo (the main.rs file) which ties everything together.
 
 This simple Rust program demonstrates:
 - how a client and server establish a shared secret using Kyber
@@ -118,7 +118,7 @@ fn main() {
 }
 ```
 
-This example demonstrates just the high-level flow. If you’re curious about the implementation details—like how keys are loaded from files, how Kyber and Dilithium are integrated, or how AES-GCM is used under the hood—feel free to explore the full source code on GitHub.
+This example demonstrates just the high-level flow. If you’re curious about the implementation details—like how keys are loaded from files, how Kyber and Dilithium are integrated, or how AES-GCM is used under the hood—feel free to explore the [full source code](https://github.com/fade2black/kyber-dilithium-demo) on GitHub.
 
 In the next part, I’m planning to expand the demo into a more realistic setup, with separate client and server processes communicating over a network using the TCP protocol. This version will include key exchange and secure message transmission using symmetric encryption (AES-GCM) in a real network environment.
 
